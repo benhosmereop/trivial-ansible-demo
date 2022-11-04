@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    #- env.yaml
+  tasks:
+
+    - name: Ensure all packages are latest
+      ansible.builtin.package:
+        name: "*"
+        state: latest
+
+    - name: Install httpd
+      ansible.builtin.package:
+        name:
+          - httpd
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: Install http
+      ansible.builtin.package:
+        name:
+          - apache2
+      when: ansible_facts['os_family'] == 'Debian'
+
+#@TODO See https://docs.ansible.com/ansible/latest/collections/ansible/builtin/package_module.html#examples for using variables instead 
+# This uses a variable as this changes per distribution.
+#- name: Remove the apache package
+#  ansible.builtin.package:
+#    name: "{{ apache }}"
+#    state: absen
